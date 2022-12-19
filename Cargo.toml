@@ -1,10 +1,10 @@
 [workspace]
 members = [
-	"examples",
 	"deterministic-bloom",
 	"deterministic-bloom-benches",
 	"deterministic-bloom-wasm"
-]
+,
+	"examples"]
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.

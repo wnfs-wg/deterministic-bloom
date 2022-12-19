@@ -1,8 +1,8 @@
 [package]
 name = "deterministic-bloom"
 version = "0.1.0"
-description = ""
-keywords = []
+description = "A deterministic Bloom filter with support for saturation. Suitable for distributed use cases and as a cryptographic primitive."
+keywords = ["bloom"]
 categories = []
 license = "Apache-2.0"
 include = ["/src", "README.md", "LICENSE"]
@@ -11,7 +11,7 @@ edition = "2021"
 rust-version = "1.64"
 documentation = "https://docs.rs/deterministic-bloom"
 repository = "https://github.com/expede/deterministic-bloom/tree/main/deterministic-bloom"
-authors = ["Brooklyn Zelenka <hello@brooklynzelenka.com>"]
+authors = ["Philipp Krüger <philipp@fission.codes>", "Stephen Akinyemi <appcypher@fission.codes>", "Brooklyn Zelenka <brooklyn@fission.codes>"]
 
 [lib]
 path = "src/lib.rs"
