@@ -1,0 +1,13 @@
+[package]
+name = "examples"
+version = "0.1.0"
+publish = false
+edition = "2021"
+authors = ["Brooklyn Zelenka <hello@brooklynzelenka.com>"]
+
+[dev-dependencies]
+deterministic-bloom = { path = "../deterministic-bloom", version = "0.1" }
+
+[[example]]
+name = "counterparts"
+path = "counterparts.rs"
