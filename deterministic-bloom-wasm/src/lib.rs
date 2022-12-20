@@ -3,7 +3,7 @@
 #![deny(unreachable_pub, private_in_public)]
 #![cfg(target_arch = "wasm32")]
 
-//! deterministic-bloom
+//! deterministic-bloom-wasm
 
 use wasm_bindgen::prelude::wasm_bindgen;
 

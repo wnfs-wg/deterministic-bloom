@@ -2,8 +2,7 @@
 members = [
 	"deterministic-bloom",
 	"deterministic-bloom-benches",
-	"deterministic-bloom-wasm"
-,
+	"deterministic-bloom-wasm",
 	"examples"]
 
 [profile.release]

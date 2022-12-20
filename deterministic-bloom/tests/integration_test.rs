@@ -1,4 +1,4 @@
 #[test]
 fn test_add() {
-    assert_eq!(deterministic_bloom::add(3, 2), 5);
+    assert_eq!(3 + 2, 5);
 }
