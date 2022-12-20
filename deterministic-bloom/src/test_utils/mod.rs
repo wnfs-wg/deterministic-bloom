@@ -1,4 +1,5 @@
-/// Random value generator for sampling data.
-mod rvg;
+//! Test utilities
+
+pub mod rvg;
 
 pub use rvg::*;

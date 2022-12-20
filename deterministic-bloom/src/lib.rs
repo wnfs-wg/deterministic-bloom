@@ -9,6 +9,9 @@
 
 pub mod utils;
 
+#[cfg(feature = "test_utils")]
+pub mod test_utils;
+
 use std::{fmt::Debug, ops::Index};
 
 use anyhow::anyhow;
