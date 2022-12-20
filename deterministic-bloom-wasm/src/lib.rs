@@ -7,7 +7,7 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 /// Add two integers together.
-// #[wasm_bindgen]
+#[wasm_bindgen]
 pub fn add(a: i32, b: i32) -> i32 {
     a + b
 }
@@ -30,6 +30,7 @@ pub fn set_panic_hook() {
 extern "C" {
     // For alerting
     pub(crate) fn alert(s: &str);
+
     // For logging in the console.
     #[wasm_bindgen(js_namespace = console)]
     pub fn log(s: &str);

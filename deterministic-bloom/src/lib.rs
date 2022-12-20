@@ -4,7 +4,7 @@
 
 //! Deterministic Bloom filters
 //!
-//! This Crate is intented as a solid basis for cache reproducability,
+//! This Crate is intented as a solid basis for cache reproducability
 //! and for underlying certain cryptographic primitives.
 
 pub mod utils;

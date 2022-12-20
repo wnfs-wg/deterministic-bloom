@@ -12,5 +12,5 @@ fn test_contains() {
         bloom.add(&vec![rvg.sample(&(..255u8))]);
     }
 
-    assert!(bloom.contains(&new_val))
+    assert!(bloom.contains(&new_val));
 }

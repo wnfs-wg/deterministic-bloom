@@ -43,3 +43,6 @@ js = [
   "wasm-bindgen-futures"
 ]
 web = ["web-sys"]
+
+[profile.release]
+lto = true
