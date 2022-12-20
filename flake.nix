@@ -46,7 +46,7 @@
         wasm-bindgen-cli
       ];
 
-      exe = {
+      bin = {
         bash = "${pkgs.bash}/bin/bash";
         cargo = "${pkgs.cargo}/bin/cargo";
         wasm-pack = "${pkgs.wasm-pack}/bin/wasm-pack";
@@ -54,13 +54,13 @@
 
       test-all =
         pkgs.writeScriptBin "test:all" ''
-          #!${exe.bash}
+          #!${bin.bash}
           echo "⚙️  Running cargo test"
-          ${exe.cargo} test
+          ${bin.cargo} test
 
           printf %"$COLUMNS"s | tr " " "-"
           echo "⚙️  Running headless Wasm tests"
-          ${exe.wasm-pack} test --headless --chrome deterministic-bloom-wasm
+          ${bin.wasm-pack} test --headless --chrome deterministic-bloom-wasm
         '';
     in
     rec
