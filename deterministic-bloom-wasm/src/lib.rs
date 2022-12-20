@@ -1,14 +1,13 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![warn(missing_debug_implementations, missing_docs, rust_2018_idioms)]
 #![deny(unreachable_pub, private_in_public)]
-#![cfg(target_arch = "wasm32")]
 
 //! deterministic-bloom-wasm
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
 /// Add two integers together.
-#[wasm_bindgen]
+// #[wasm_bindgen]
 pub fn add(a: i32, b: i32) -> i32 {
     a + b
 }

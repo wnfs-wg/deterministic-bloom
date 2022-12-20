@@ -31,7 +31,7 @@ use crate::utils::ByteArrayVisitor;
 /// # Examples
 ///
 /// ```
-/// use wnfs::private::BloomFilter;
+/// use deterministic_bloom::BloomFilter;
 ///
 /// let mut filter = BloomFilter::<256, 30>::default();
 /// filter.add(&[0xF5u8; 32]);
@@ -52,7 +52,7 @@ pub struct BloomFilter<const N: usize, const K: usize> {
 /// # Examples
 ///
 /// ```
-/// use wnfs::private::BloomFilter;
+/// use deterministic_bloom::BloomFilter;
 ///
 /// let filter = BloomFilter::<256, 30>::default();
 /// let indices = filter.hash_indices(&[0xF5u8; 32]);
@@ -99,7 +99,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// # Examples
     ///
     /// ```
-    /// use wnfs::private::BloomFilter;
+    /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::new();
     /// filter.add(&[0xF5u8; 32]);
@@ -117,7 +117,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// # Examples
     ///
     /// ```
-    /// use wnfs::private::BloomFilter;
+    /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
     /// filter.add(&[0xF5u8; 32]);
@@ -138,7 +138,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// # Examples
     ///
     /// ```
-    /// use wnfs::private::BloomFilter;
+    /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
     ///
@@ -153,7 +153,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// # Examples
     ///
     /// ```
-    /// use wnfs::private::BloomFilter;
+    /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
     /// filter.add(&[0xF5u8; 32]);
@@ -172,7 +172,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// # Examples
     ///
     /// ```
-    /// use wnfs::private::BloomFilter;
+    /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
     /// filter.add(&[0xF5u8; 32]);
@@ -188,7 +188,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// # Examples
     ///
     /// ```
-    /// use wnfs::private::BloomFilter;
+    /// use deterministic_bloom::BloomFilter;
     ///
     /// let filter = BloomFilter::<256, 30>::default();
     /// let indices = filter.hash_indices(&[0xF5u8; 32]);
@@ -209,7 +209,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// # Examples
     ///
     /// ```
-    /// use wnfs::private::BloomFilter;
+    /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
     /// filter.add(&[0xF5u8; 32]);

@@ -20,7 +20,7 @@
     } @ inputs:
     flake-utils.lib.eachDefaultSystem (system:
     let
-      overlays = [ (import rust-overlay) ];
+      overlays = [(import rust-overlay)];
       pkgs = import nixpkgs { inherit system overlays; };
 
       rust-toolchain =
@@ -45,6 +45,23 @@
         wasm-pack
         wasm-bindgen-cli
       ];
+
+      exe = {
+        bash = "${pkgs.bash}/bin/bash";
+        cargo = "${pkgs.cargo}/bin/cargo";
+        wasm-pack = "${pkgs.wasm-pack}/bin/wasm-pack";
+      };
+
+      test-all =
+        pkgs.writeScriptBin "test:all" ''
+          #!${exe.bash}
+          echo "⚙️  Running cargo test"
+          ${exe.cargo} test
+
+          printf %"$COLUMNS"s | tr " " "-"
+          echo "⚙️  Running headless Wasm tests"
+          ${exe.wasm-pack} test --headless --chrome deterministic-bloom-wasm
+        '';
     in
     rec
     {
@@ -58,6 +75,9 @@
           rust-toolchain
           pre-commit
           direnv
+          chromedriver
+          geckodriver
+          test-all
           self.packages.${system}.irust
         ] ++ format-pkgs ++ cargo-installs;
 

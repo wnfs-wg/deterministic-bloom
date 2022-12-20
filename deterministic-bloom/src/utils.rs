@@ -66,10 +66,10 @@ where
 ///
 /// ```
 /// use rand::thread_rng;
-/// use wnfs::utils::get_random_bytes;
+/// use deterministic_bloom::utils::gen_random_bytes;
 ///
 /// let rng = &mut thread_rng();
-/// let bytes = get_random_bytes::<32>(rng);
+/// let bytes = gen_random_bytes::<32>(rng);
 ///
 /// assert_eq!(bytes.len(), 32);
 /// ```
