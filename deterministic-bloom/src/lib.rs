@@ -309,19 +309,19 @@ mod tests {
         assert!(!bloom.contains(b"tird"));
     }
 
-    //  #[test]
-    //  fn serialized_bloom_filter_can_be_deserialized_correctly() {
-    //      let mut bloom = BloomFilter::<256, 30>::new();
-    //      let items: Vec<String> = vec!["first".into(), "second".into(), "third".into()];
-    //      items.iter().for_each(|item| {
-    //          bloom.add(item);
-    //      });
+    #[test]
+    fn serialized_bloom_filter_can_be_deserialized_correctly() {
+        let mut bloom = BloomFilter::<256, 30>::new();
+        let items: Vec<String> = vec!["first".into(), "second".into(), "third".into()];
+        items.iter().for_each(|item| {
+            bloom.add(item);
+        });
 
-    //      let ipld = ipld_serde::to_ipld(&bloom).unwrap();
-    //      let deserialized: BloomFilter<256, 30> = ipld_serde::from_ipld(ipld).unwrap();
+        let ipld = libipld::serde::to_ipld(&bloom).unwrap();
+        let deserialized: BloomFilter<256, 30> = libipld::serde::from_ipld(ipld).unwrap();
 
-    //      assert_eq!(deserialized, bloom);
-    //  }
+        assert_eq!(deserialized, bloom);
+    }
 }
 
 #[cfg(test)]
