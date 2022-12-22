@@ -39,15 +39,24 @@ macro_rules! gen_bloom {
 
         #[wasm_bindgen]
         impl $name {
+            #[doc = concat!("Initialize a blank (all zeros) [", stringify!($name), "].")]
+            #[doc = "```"]
+            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+            #[doc = ""]
+            #[doc = concat!("let blank = ", stringify!($name), "::new();")]
+            #[doc = concat!("assert!(blank.count_ones().eq(0))")]
+            #[doc = "```"]
             pub fn new() -> $name {
                 Default::default()
             }
 
+            #[doc = concat!("Attempt to initialize a [", stringify!($name), "] with a starting array.")]
+            #[doc = "Fails if the [Vec] is the wrong length."]
             pub fn try_from_vec(vec: Vec<u8>) -> Result<$name, JsError> {
                 $name::try_from(vec).map_err(|e| JsError::new(&e.to_string()))
             }
 
-            #[doc = r"The (constant) size of the underlying [BloomFilter] in bytes"]
+            #[doc = "The (constant) size of the underlying [BloomFilter] in bytes."]
             #[doc = "```"]
             #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
             #[doc = ""]
@@ -58,19 +67,23 @@ macro_rules! gen_bloom {
                 $k
             }
 
-            /// The number of hashes used in the underlying [BloomFilter]
+            /// The number of hashes used in the underlying [BloomFilter].
             pub fn hash_count() -> usize {
                 $n
             }
 
-            pub fn insert(bloom: &mut $name, new_val: Vec<u8>) -> () {
+            /// Insert a new elememt into the underlying [BloomFilter].
+            /// This [Vec] can be of any length.
+            pub fn insert_vec(bloom: &mut $name, new_val: Vec<u8>) -> () {
                 bloom.boxed.insert(&new_val);
             }
 
+            /// Check if some [Vec] is in the underlying [BloomFilter].
             pub fn contains(bloom: &$name, item: Vec<u8>) -> bool {
                 bloom.boxed.contains(&item)
             }
 
+            /// Count how many bits are set to 1 (sometimes called a `popcount`).
             pub fn count_ones(bloom: &$name) -> usize {
                 bloom.boxed.count_ones()
             }
