@@ -240,6 +240,20 @@ impl<const N: usize, const K: usize> TryFrom<Vec<u8>> for BloomFilter<N, K> {
     }
 }
 
+// impl<const N: usize, const K: usize, T> TryFrom<Box<T>> for BloomFilter<N, K>
+// where
+//     BloomFilter<N, K>: TryFrom<T>, // T: TryInto<BloomFilter<N, K>>,
+// {
+//     type Error = anyhow::Error;
+//
+//     fn try_from(o: Option<T>) -> Result<Self, Self::Error> {
+//         match o {
+//             None => Err(anyhow!("Nope")),
+//             Some(t) => BloomFilter::<N, K>::try_from(t).map_err(|_| anyhow!("dhjska")),
+//         }
+//     }
+// }
+
 impl<const N: usize, const K: usize> Index<usize> for BloomFilter<N, K> {
     type Output = bool;
 

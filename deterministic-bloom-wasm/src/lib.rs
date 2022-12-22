@@ -4,13 +4,44 @@
 
 //! deterministic-bloom-wasm
 
-use wasm_bindgen::prelude::wasm_bindgen;
+use derive_more::{From, Into};
+use deterministic_bloom::BloomFilter;
+use std::boxed::Box;
+use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
-/// Add two integers together.
 #[wasm_bindgen]
-pub fn add(a: i32, b: i32) -> i32 {
-    a + b
+#[derive(Debug, From, Into)]
+pub struct WasmBloomFilter {
+    bytes: Box<BloomFilter<256, 30>>,
 }
+
+#[wasm_bindgen]
+pub fn insert(mut bloom: WasmBloomFilter, new_val: Vec<u8>) -> Result<String, JsValue> {
+    let new_slice: [u8; 32] = new_val.try_into().map_err(|_| JsValue::from_str("nope"))?;
+    bloom.bytes.add(&new_slice);
+    Ok("hi".to_string())
+}
+
+// impl<T> TryFrom<T> for WasmBloomFilter
+// where
+//     BloomFilter<256, 30>: TryFrom<T>,
+// {
+//     type Error = <BloomFilter<256, 30> as TryFrom<T>>::Error;
+//
+//     fn try_from(t: T) -> Result<Self, Self::Error> {
+//         WasmBloomFilter {
+//             bytes: t.try_into()?,
+//         }
+//     }
+// }
+
+// #[wasm_bindgen]
+// pub fn init(size: usize) -> WasmBloomFilter {
+//     let bytes = Vec::with_capacity(size);
+//     WasmBloomFilter {
+//         bytes: Rc::new(RefCell::new(bytes.as_slice())),
+//     }
+// }
 
 //------------------------------------------------------------------------------
 // Utilities

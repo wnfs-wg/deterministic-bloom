@@ -22,9 +22,12 @@ path = "src/lib.rs"
 # logging them with `console.error`. This is great for development, but requires
 # all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
 # code size when deploying.
+anyhow  = "1.0"
 console_error_panic_hook = { version = "0.1", optional = true }
+derive_more = "0.99"
 deterministic-bloom = { path = "../deterministic-bloom", version = "0.1" }
 js-sys = { version = "0.3", optional = true }
+once_cell = "1.16"
 tracing = "0.1"
 wasm-bindgen = { version = "0.2", optional = true, features = ["serde-serialize"] }
 wasm-bindgen-futures = { version = "0.4", optional = true }
