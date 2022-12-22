@@ -44,7 +44,7 @@ macro_rules! gen_bloom {
             #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
             ///
             #[doc = concat!("let blank = ", stringify!($name), "::new();")]
-            #[doc = concat!("assert!(", stringify!($name), "::count_ones(&blank).eq(&0));")]
+            #[doc = concat!("assert!(", stringify!($name), "::count_ones(&blank) == 0);")]
             /// ```
             pub fn new() -> Self {
                 Default::default()
@@ -56,16 +56,16 @@ macro_rules! gen_bloom {
                 $name::try_from(vec).map_err(|e| JsError::new(&e.to_string()))
             }
 
-           /// The (constant) size of the underlying [BloomFilter] in bytes.
-           /// ```
-           #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
-           ///
-           #[doc = concat!("let size = ", stringify!($name), "::byte_count();")]
-           #[doc = concat!("assert!(size == ", stringify!($k), ");")]
-           /// ```
-           pub fn byte_count() -> usize {
-               $k
-           }
+            /// The (constant) size of the underlying [BloomFilter] in bytes.
+            /// ```
+            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+            ///
+            #[doc = concat!("let size = ", stringify!($name), "::byte_count();")]
+            #[doc = concat!("assert!(size == ", stringify!($k), ");")]
+            /// ```
+            pub fn byte_count() -> usize {
+                $k
+            }
 
             /// The number of hashes used in the underlying [BloomFilter].
             /// ```
