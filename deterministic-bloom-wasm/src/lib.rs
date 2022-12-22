@@ -53,9 +53,9 @@ macro_rules! gen_bloom {
         }
 
         impl TryFrom<Vec<u8>> for $name {
-            type Error = anyhow::Error;
+            type Error = deterministic_bloom::Error;
 
-            fn try_from(vec: Vec<u8>) -> Result<Self, anyhow::Error> {
+            fn try_from(vec: Vec<u8>) -> Result<Self, deterministic_bloom::Error> {
                 Ok($name {
                     boxed: Box::new(<BloomFilter<$n, $k>>::try_from(vec)?),
                 })

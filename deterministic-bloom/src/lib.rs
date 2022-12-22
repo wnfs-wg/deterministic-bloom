@@ -14,9 +14,9 @@ pub mod test_utils;
 
 use std::{fmt::Debug, ops::Index};
 
-use anyhow::anyhow;
 use bitvec::prelude::BitArray;
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 use xxhash_rust::xxh3;
 
 use crate::utils::ByteArrayVisitor;
@@ -67,6 +67,12 @@ pub struct BloomFilter<const N: usize, const K: usize> {
 pub struct HashIndexIterator<'a, T: AsRef<[u8]>, const N: usize> {
     item: &'a T,
     index: u64,
+}
+
+#[derive(Error, Debug)]
+pub enum Error {
+    #[error("Cannot convert vector to BloomFilter: Expected length {0}")]
+    VectorImportSizeMismatch(usize),
 }
 
 //------------------------------------------------------------------------------
@@ -227,15 +233,14 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
 }
 
 impl<const N: usize, const K: usize> TryFrom<Vec<u8>> for BloomFilter<N, K> {
-    type Error = anyhow::Error;
+    type Error = Error;
 
     fn try_from(bytes: Vec<u8>) -> Result<Self, Self::Error> {
-        let bits = BitArray::<[u8; N]>::new(bytes.try_into().map_err(|e: Vec<u8>| {
-            anyhow!(
-                "Cannot convert vector to BloomFilter: Expected length {}",
-                e.len()
-            )
-        })?);
+        let bits = BitArray::<[u8; N]>::new(
+            bytes
+                .try_into()
+                .map_err(|e: Vec<u8>| Error::VectorImportSizeMismatch(e.len()))?,
+        );
         Ok(Self { bits })
     }
 }

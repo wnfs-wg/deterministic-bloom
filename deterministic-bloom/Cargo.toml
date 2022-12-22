@@ -17,11 +17,11 @@ authors = ["Philipp Krüger <philipp@fission.codes>", "Stephen Akinyemi <appcyph
 path = "src/lib.rs"
 
 [dependencies]
-anyhow = "1.0"
 bitvec = { version = "1.0", features = ["serde"] }
 proptest = { version = "1.0", optional = true }
 rand_core = "0.6"
 serde = { version = "1.0", features = ["rc"] }
+thiserror = "1.0"
 tracing = "0.1"
 xxhash-rust = { version = "0.8", features = ["xxh3"] }
 

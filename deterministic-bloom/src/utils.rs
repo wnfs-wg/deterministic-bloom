@@ -1,6 +1,7 @@
 //! Utilities for working with Bloom filters
 
-use anyhow::Result;
+use thiserror::Error;
+
 #[cfg(any(test, feature = "test_strategies"))]
 use proptest::{
     strategy::{Strategy, ValueTree},
