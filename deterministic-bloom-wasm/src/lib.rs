@@ -39,35 +39,41 @@ macro_rules! gen_bloom {
 
         #[wasm_bindgen]
         impl $name {
-            #[doc = concat!("Initialize a blank (all zeros) [", stringify!($name), "].")]
-            #[doc = "```"]
+            #[doc = concat!("Initialize a blank [", stringify!($name), "] (i.e. contains no elements).")]
+            /// ```
             #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
-            #[doc = ""]
+            ///
             #[doc = concat!("let blank = ", stringify!($name), "::new();")]
-            #[doc = concat!("assert!(blank.count_ones().eq(0))")]
-            #[doc = "```"]
-            pub fn new() -> $name {
+            #[doc = concat!("assert!(", stringify!($name), "::count_ones(&blank).eq(&0));")]
+            /// ```
+            pub fn new() -> Self {
                 Default::default()
             }
 
             #[doc = concat!("Attempt to initialize a [", stringify!($name), "] with a starting array.")]
-            #[doc = "Fails if the [Vec] is the wrong length."]
+            #[doc = concat!("Fails with a [JsError] the [Vec] is not exactly ", stringify!($n), " bytes long.")]
             pub fn try_from_vec(vec: Vec<u8>) -> Result<$name, JsError> {
                 $name::try_from(vec).map_err(|e| JsError::new(&e.to_string()))
             }
 
-            #[doc = "The (constant) size of the underlying [BloomFilter] in bytes."]
-            #[doc = "```"]
-            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
-            #[doc = ""]
-            #[doc = concat!("let size = ", stringify!($name), "::byte_count();")]
-            #[doc = concat!("assert!(size.eq(&", stringify!($k), "));")]
-            #[doc = "```"]
-            pub fn byte_count() -> usize {
-                $k
-            }
+           /// The (constant) size of the underlying [BloomFilter] in bytes.
+           /// ```
+           #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+           ///
+           #[doc = concat!("let size = ", stringify!($name), "::byte_count();")]
+           #[doc = concat!("assert!(size == ", stringify!($k), ");")]
+           /// ```
+           pub fn byte_count() -> usize {
+               $k
+           }
 
             /// The number of hashes used in the underlying [BloomFilter].
+            /// ```
+            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+            ///
+            #[doc = concat!("let count = ", stringify!($name), "::hash_count();")]
+            #[doc = concat!("assert!(count == ", stringify!($n), ");")]
+            /// ```
             pub fn hash_count() -> usize {
                 $n
             }
