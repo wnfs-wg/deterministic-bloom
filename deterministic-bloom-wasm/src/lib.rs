@@ -16,10 +16,10 @@ pub struct WasmBloomFilter {
 }
 
 #[wasm_bindgen]
-pub fn insert(mut bloom: WasmBloomFilter, new_val: Vec<u8>) -> Result<String, JsValue> {
+pub fn insert(mut bloom: WasmBloomFilter, new_val: Vec<u8>) -> Result<WasmBloomFilter, JsValue> {
     let new_slice: [u8; 32] = new_val.try_into().map_err(|_| JsValue::from_str("nope"))?;
     bloom.bytes.add(&new_slice);
-    Ok("hi".to_string())
+    Ok(bloom)
 }
 
 // impl<T> TryFrom<T> for WasmBloomFilter
