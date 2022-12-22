@@ -2,15 +2,35 @@
 #![warn(missing_debug_implementations, missing_docs, rust_2018_idioms)]
 #![deny(unreachable_pub, private_in_public)]
 
-//! deterministic-bloom-wasm
+//! Wasm/JS bindings for [BloomFilter]
 
 use derive_more::{From, Into};
 use deterministic_bloom::BloomFilter;
 use std::boxed::Box;
 use wasm_bindgen::prelude::{wasm_bindgen, JsError};
 
+//------------------------------------------------------------------------------
+// Utilities
+//------------------------------------------------------------------------------
+
+/// Panic hook lets us get better error messages if our Rust code ever panics.
+///
+/// For more details see
+/// <https://github.com/rustwasm/console_error_panic_hook#readme>
+#[wasm_bindgen(js_name = "setPanicHook")]
+pub fn set_panic_hook() {
+    #[cfg(feature = "console_error_panic_hook")]
+    console_error_panic_hook::set_once();
+}
+
+//------------------------------------------------------------------------------
+// Macros
+//------------------------------------------------------------------------------
+
+/// Generate a monomorphic [BloomFilter] instance.
 macro_rules! gen_bloom {
-    ($name: ident, $n: tt, $k: tt) => {
+    ($name: ident, $n: expr, $k: expr) => {
+        #[doc = concat!("A monomorphic wrapper for [BloomFilter]`<", stringify!($n), ", ", stringify!($k), ">`.")]
         #[wasm_bindgen]
         #[derive(Debug, Default, From, Into)]
         pub struct $name {
@@ -24,14 +44,22 @@ macro_rules! gen_bloom {
             }
 
             pub fn try_from_vec(vec: Vec<u8>) -> Result<$name, JsError> {
-                $name::try_from(vec).map_err(|_| JsError::new("err"))
+                $name::try_from(vec).map_err(|e| JsError::new(&e.to_string()))
             }
 
+            #[doc = r"The (constant) size of the underlying [BloomFilter] in bytes"]
+            #[doc = "```"]
+            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+            #[doc = ""]
+            #[doc = concat!("let size = ", stringify!($name), "::byte_count();")]
+            #[doc = concat!("assert!(size.eq(&", stringify!($k), "));")]
+            #[doc = "```"]
             pub fn byte_count() -> usize {
                 $k
             }
 
-            pub fn num_iterations() -> usize {
+            /// The number of hashes used in the underlying [BloomFilter]
+            pub fn hash_count() -> usize {
                 $n
             }
 
@@ -52,13 +80,19 @@ macro_rules! gen_bloom {
             }
         }
 
+        impl From<BloomFilter<$n, $k>> for $name {
+            fn from(bloom: BloomFilter<$n, $k>) -> $name {
+                $name {
+                    boxed: Box::new(bloom)
+                }
+            }
+        }
+
         impl TryFrom<Vec<u8>> for $name {
             type Error = deterministic_bloom::Error;
 
             fn try_from(vec: Vec<u8>) -> Result<Self, deterministic_bloom::Error> {
-                Ok($name {
-                    boxed: Box::new(<BloomFilter<$n, $k>>::try_from(vec)?),
-                })
+                <BloomFilter<$n, $k>>::try_from(vec).map($name::from)
             }
         }
     };
@@ -67,45 +101,3 @@ macro_rules! gen_bloom {
 gen_bloom!(Oh, 32, 2);
 gen_bloom!(Hai, 256, 30);
 gen_bloom!(Thar, 1024, 128);
-
-//------------------------------------------------------------------------------
-// Utilities
-//------------------------------------------------------------------------------
-
-/// Panic hook lets us get better error messages if our Rust code ever panics.
-///
-/// For more details see
-/// <https://github.com/rustwasm/console_error_panic_hook#readme>
-#[wasm_bindgen(js_name = "setPanicHook")]
-pub fn set_panic_hook() {
-    #[cfg(feature = "console_error_panic_hook")]
-    console_error_panic_hook::set_once();
-}
-
-#[wasm_bindgen]
-extern "C" {
-    // For alerting
-    pub(crate) fn alert(s: &str);
-
-    // For logging in the console.
-    #[wasm_bindgen(js_namespace = console)]
-    pub fn log(s: &str);
-}
-
-//------------------------------------------------------------------------------
-// Macros
-//------------------------------------------------------------------------------
-
-/// Return a representation of an object owned by JS.
-#[macro_export]
-macro_rules! value {
-    ($value:expr) => {
-        wasm_bindgen::JsValue::from($value)
-    };
-}
-
-/// Calls the wasm_bindgen console.log.
-#[macro_export]
-macro_rules! console_log {
-    ($($t:tt)*) => ($crate::log(&format_args!($($t)*).to_string()))
-}

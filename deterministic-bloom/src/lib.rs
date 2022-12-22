@@ -12,14 +12,12 @@ pub mod utils;
 #[cfg(feature = "test_utils")]
 pub mod test_utils;
 
-use std::{fmt::Debug, ops::Index};
-
+use crate::utils::ByteArrayVisitor;
 use bitvec::prelude::BitArray;
 use serde::{Deserialize, Serialize};
+use std::{fmt::Debug, ops::Index};
 use thiserror::Error;
 use xxhash_rust::xxh3;
-
-use crate::utils::ByteArrayVisitor;
 
 //------------------------------------------------------------------------------
 // Type Definitions
@@ -71,8 +69,8 @@ pub struct HashIndexIterator<'a, T: AsRef<[u8]>, const N: usize> {
 
 #[derive(Error, Debug)]
 pub enum Error {
-    #[error("Cannot convert vector to BloomFilter: Expected length {0}")]
-    VectorImportSizeMismatch(usize),
+    #[error("Cannot convert vector to BloomFilter: expected {expected}, but got {actual}")]
+    VectorImportSizeMismatch { expected: usize, actual: usize },
 }
 
 //------------------------------------------------------------------------------
@@ -151,9 +149,9 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
     ///
-    /// assert_eq!(filter.num_iterations(), 30);
+    /// assert_eq!(filter.hash_count(), 30);
     /// ```
-    pub const fn num_iterations(&self) -> usize {
+    pub const fn hash_count(&self) -> usize {
         K
     }
 
@@ -210,7 +208,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     where
         T: AsRef<[u8]>,
     {
-        HashIndexIterator::<_, N>::new(item).take(self.num_iterations())
+        HashIndexIterator::<_, N>::new(item).take(self.hash_count())
     }
 
     /// Get the bytes of the bloom filter.
@@ -236,11 +234,12 @@ impl<const N: usize, const K: usize> TryFrom<Vec<u8>> for BloomFilter<N, K> {
     type Error = Error;
 
     fn try_from(bytes: Vec<u8>) -> Result<Self, Self::Error> {
-        let bits = BitArray::<[u8; N]>::new(
-            bytes
-                .try_into()
-                .map_err(|e: Vec<u8>| Error::VectorImportSizeMismatch(e.len()))?,
-        );
+        let bits = BitArray::<[u8; N]>::new(bytes.try_into().map_err(|vec: Vec<u8>| {
+            Error::VectorImportSizeMismatch {
+                expected: N,
+                actual: vec.len(),
+            }
+        })?);
         Ok(Self { bits })
     }
 }

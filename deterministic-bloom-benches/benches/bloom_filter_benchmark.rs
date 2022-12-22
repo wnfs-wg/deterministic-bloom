@@ -9,7 +9,7 @@ pub fn add_benchmark(crit: &mut Criterion) {
     crit.bench_function("add", |bench| {
         bench.iter(|| {
             let new_val: u8 = rng.gen_range(0..10);
-            bloom.add(&[new_val; 32]);
+            bloom.insert(&[new_val; 32]);
         })
     });
 }
@@ -20,7 +20,7 @@ pub fn count_ones_benchmark(crit: &mut Criterion) {
 
     for _ in 1..50 {
         let new_val: u8 = rng.gen_range(0..10);
-        bloom.add(&[new_val; 32]);
+        bloom.insert(&[new_val; 32]);
     }
 
     crit.bench_function("count_ones", |bench| bench.iter(|| bloom.count_ones()));
