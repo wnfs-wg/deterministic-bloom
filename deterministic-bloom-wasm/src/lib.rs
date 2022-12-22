@@ -7,41 +7,66 @@
 use derive_more::{From, Into};
 use deterministic_bloom::BloomFilter;
 use std::boxed::Box;
-use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+use wasm_bindgen::prelude::{wasm_bindgen, JsError};
 
-#[wasm_bindgen]
-#[derive(Debug, From, Into)]
-pub struct WasmBloomFilter {
-    bytes: Box<BloomFilter<256, 30>>,
+macro_rules! gen_bloom {
+    ($name: ident, $n: tt, $k: tt) => {
+        #[wasm_bindgen]
+        #[derive(Debug, Default, From, Into)]
+        pub struct $name {
+            pub(crate) boxed: Box<BloomFilter<$n, $k>>,
+        }
+
+        #[wasm_bindgen]
+        impl $name {
+            pub fn new() -> $name {
+                Default::default()
+            }
+
+            pub fn try_from_vec(vec: Vec<u8>) -> Result<$name, JsError> {
+                $name::try_from(vec).map_err(|_| JsError::new("err"))
+            }
+
+            pub fn byte_count() -> usize {
+                $k
+            }
+
+            pub fn num_iterations() -> usize {
+                $n
+            }
+
+            pub fn insert(bloom: &mut $name, new_val: Vec<u8>) -> () {
+                bloom.boxed.insert(&new_val);
+            }
+
+            pub fn contains(bloom: &$name, item: Vec<u8>) -> bool {
+                bloom.boxed.contains(&item)
+            }
+
+            pub fn count_ones(bloom: &$name) -> usize {
+                bloom.boxed.count_ones()
+            }
+
+            pub fn as_bytes(bloom: &$name) -> Vec<u8> {
+                bloom.boxed.as_bytes().to_vec()
+            }
+        }
+
+        impl TryFrom<Vec<u8>> for $name {
+            type Error = anyhow::Error;
+
+            fn try_from(vec: Vec<u8>) -> Result<Self, anyhow::Error> {
+                Ok($name {
+                    boxed: Box::new(<BloomFilter<$n, $k>>::try_from(vec)?),
+                })
+            }
+        }
+    };
 }
 
-#[wasm_bindgen]
-pub fn insert(mut bloom: WasmBloomFilter, new_val: Vec<u8>) -> Result<WasmBloomFilter, JsValue> {
-    let new_slice: [u8; 32] = new_val.try_into().map_err(|_| JsValue::from_str("nope"))?;
-    bloom.bytes.add(&new_slice);
-    Ok(bloom)
-}
-
-// impl<T> TryFrom<T> for WasmBloomFilter
-// where
-//     BloomFilter<256, 30>: TryFrom<T>,
-// {
-//     type Error = <BloomFilter<256, 30> as TryFrom<T>>::Error;
-//
-//     fn try_from(t: T) -> Result<Self, Self::Error> {
-//         WasmBloomFilter {
-//             bytes: t.try_into()?,
-//         }
-//     }
-// }
-
-// #[wasm_bindgen]
-// pub fn init(size: usize) -> WasmBloomFilter {
-//     let bytes = Vec::with_capacity(size);
-//     WasmBloomFilter {
-//         bytes: Rc::new(RefCell::new(bytes.as_slice())),
-//     }
-// }
+gen_bloom!(Oh, 32, 2);
+gen_bloom!(Hai, 256, 30);
+gen_bloom!(Thar, 1024, 128);
 
 //------------------------------------------------------------------------------
 // Utilities

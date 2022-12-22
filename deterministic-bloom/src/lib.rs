@@ -29,7 +29,7 @@ use crate::utils::ByteArrayVisitor;
 ///
 /// `N` is the size of the bloom filter in bytes.
 ///
-/// `K` is the number of bits to be set with each add operation.
+/// `K` is the number of bits to be set with each insert operation.
 ///
 /// # Examples
 ///
@@ -37,7 +37,7 @@ use crate::utils::ByteArrayVisitor;
 /// use deterministic_bloom::BloomFilter;
 ///
 /// let mut filter = BloomFilter::<256, 30>::default();
-/// filter.add(&[0xF5u8; 32]);
+/// filter.insert(&[0xF5u8; 32]);
 ///
 /// assert!(filter.contains(&[0xF5u8; 32]));
 /// ```
@@ -105,7 +105,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::new();
-    /// filter.add(&[0xF5u8; 32]);
+    /// filter.insert(&[0xF5u8; 32]);
     ///
     /// assert!(filter.contains(&[0xF5u8; 32]));
     /// ```
@@ -115,7 +115,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
         }
     }
 
-    /// Adds an item to the bloom filter.
+    /// Inserts an item to the bloom filter.
     ///
     /// # Examples
     ///
@@ -123,11 +123,11 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
-    /// filter.add(&[0xF5u8; 32]);
+    /// filter.insert(&[0xF5u8; 32]);
     ///
     /// assert!(filter.contains(&[0xF5u8; 32]));
     /// ```
-    pub fn add<T>(&mut self, item: &T)
+    pub fn insert<T>(&mut self, item: &T)
     where
         T: AsRef<[u8]>,
     {
@@ -159,7 +159,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
-    /// filter.add(&[0xF5u8; 32]);
+    /// filter.insert(&[0xF5u8; 32]);
     ///
     /// assert!(filter.contains(&[0xF5u8; 32]));
     /// ```
@@ -178,7 +178,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
-    /// filter.add(&[0xF5u8; 32]);
+    /// filter.insert(&[0xF5u8; 32]);
     ///
     /// assert_eq!(filter.count_ones(), 30);
     /// ```
@@ -186,7 +186,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
         self.bits.count_ones()
     }
 
-    /// Returns the indices of the bits that would be set if the item was added to the bloom filter.
+    /// Returns the indices of the bits that would be set if the item was inserted to the bloom filter.
     ///
     /// # Examples
     ///
@@ -215,7 +215,7 @@ impl<const N: usize, const K: usize> BloomFilter<N, K> {
     /// use deterministic_bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::<256, 30>::default();
-    /// filter.add(&[0xF5u8; 32]);
+    /// filter.insert(&[0xF5u8; 32]);
     ///
     /// let bytes = filter.as_bytes();
     /// assert_eq!(bytes.len(), 256);
@@ -239,20 +239,6 @@ impl<const N: usize, const K: usize> TryFrom<Vec<u8>> for BloomFilter<N, K> {
         Ok(Self { bits })
     }
 }
-
-// impl<const N: usize, const K: usize, T> TryFrom<Box<T>> for BloomFilter<N, K>
-// where
-//     BloomFilter<N, K>: TryFrom<T>, // T: TryInto<BloomFilter<N, K>>,
-// {
-//     type Error = anyhow::Error;
-//
-//     fn try_from(o: Option<T>) -> Result<Self, Self::Error> {
-//         match o {
-//             None => Err(anyhow!("Nope")),
-//             Some(t) => BloomFilter::<N, K>::try_from(t).map_err(|_| anyhow!("dhjska")),
-//         }
-//     }
-// }
 
 impl<const N: usize, const K: usize> Index<usize> for BloomFilter<N, K> {
     type Output = bool;
@@ -310,11 +296,11 @@ mod tests {
     // use libipld::serde as ipld_serde;
 
     #[test]
-    fn bloom_filter_can_add_and_validate_item_existence() {
+    fn bloom_filter_can_insert_and_validate_item_existence() {
         let mut bloom = BloomFilter::<256, 30>::new();
         let items: Vec<String> = vec!["first".into(), "second".into(), "third".into()];
         items.iter().for_each(|item| {
-            bloom.add(item);
+            bloom.insert(item);
         });
 
         items.iter().for_each(|item| {
@@ -331,7 +317,7 @@ mod tests {
         let mut bloom = BloomFilter::<256, 30>::new();
         let items: Vec<String> = vec!["first".into(), "second".into(), "third".into()];
         items.iter().for_each(|item| {
-            bloom.add(item);
+            bloom.insert(item);
         });
 
         let ipld = libipld::serde::to_ipld(&bloom).unwrap();
