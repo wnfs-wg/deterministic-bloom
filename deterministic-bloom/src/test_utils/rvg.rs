@@ -1,3 +1,4 @@
+//! Random Value Generator (RVG)
 use proptest::{
     collection::vec,
     strategy::{Strategy, ValueTree},

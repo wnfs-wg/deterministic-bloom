@@ -1,9 +1,5 @@
 <div align="center">
-  <a href="https://github.com/expede/deterministic-bloom" target="_blank">
-    <img src="https://raw.githubusercontent.com/expede/deterministic-bloom/main/assets/a_logo.png" alt="deterministic-bloom Logo" width="100"></img>
-  </a>
-
-  <h1 align="center">deterministic-bloom</h1>
+  <h1 align="center">Deterministic Bloom Filter</h1>
 
   <p>
     <a href="https://crates.io/crates/deterministic-bloom">
@@ -31,8 +27,6 @@
 </div>
 
 <div align="center"><sub>:warning: Work in progress :warning:</sub></div>
-
-##
 
 ## Outline
 
