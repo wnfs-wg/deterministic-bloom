@@ -27,7 +27,7 @@ pub fn set_panic_hook() {
 // Macros
 //------------------------------------------------------------------------------
 
-/// Generate a monomorphic [BloomFilter] instance.
+/// Generate a monomorphic [BloomFilter] newtypes.
 macro_rules! gen_bloom {
     ($name: ident, $n: expr, $k: expr) => {
         #[doc = concat!("A monomorphic wrapper for [BloomFilter]`<", stringify!($n), ", ", stringify!($k), ">`.")]
@@ -40,12 +40,16 @@ macro_rules! gen_bloom {
         #[wasm_bindgen]
         impl $name {
             #[doc = concat!("Initialize a blank [", stringify!($name), "] (i.e. contains no elements).")]
+            ///
+            /// # Examples
+            ///
             /// ```
             #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
             ///
             #[doc = concat!("let blank = ", stringify!($name), "::new();")]
-            #[doc = concat!("assert!(", stringify!($name), "::count_ones(&blank) == 0);")]
+            #[doc = concat!("assert_eq!(", stringify!($name), "::count_ones(&blank), 0);")]
             /// ```
+            #[wasm_bindgen(constructor)]
             pub fn new() -> Self {
                 Default::default()
             }
@@ -57,22 +61,27 @@ macro_rules! gen_bloom {
             }
 
             /// The (constant) size of the underlying [BloomFilter] in bytes.
+            ///
+            /// # Examples
+            ///
             /// ```
             #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
             ///
             #[doc = concat!("let size = ", stringify!($name), "::byte_count();")]
-            #[doc = concat!("assert!(size == ", stringify!($k), ");")]
+            #[doc = concat!("assert_eq!(size, ", stringify!($k), ");")]
             /// ```
             pub fn byte_count() -> usize {
                 $k
             }
 
             /// The number of hashes used in the underlying [BloomFilter].
+            ///
+            /// # Examples
+            ///
             /// ```
             #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
             ///
-            #[doc = concat!("let count = ", stringify!($name), "::hash_count();")]
-            #[doc = concat!("assert!(count == ", stringify!($n), ");")]
+            #[doc = concat!("assert_eq!(", stringify!($name), "::hash_count(), ", stringify!($n), ");")]
             /// ```
             pub fn hash_count() -> usize {
                 $n
@@ -80,27 +89,85 @@ macro_rules! gen_bloom {
 
             /// Insert a new elememt into the underlying [BloomFilter].
             /// This [Vec] can be of any length.
-            pub fn insert_vec(bloom: &mut $name, new_val: Vec<u8>) -> () {
-                bloom.boxed.insert(&new_val);
+            ///
+            /// # Examples
+            ///
+            /// ```
+            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+            ///
+            #[doc = concat!("let mut bloom = ", stringify!($name), "::new();")]
+            /// let item = vec![1, 2, 3, 4, 5];
+            /// bloom.insert_vec(item.clone());
+            ///
+            /// assert!(bloom.contains(item.clone()));
+            /// ```
+            pub fn insert_vec(&mut self, new_val: Vec<u8>) -> () {
+                self.boxed.insert(&new_val);
             }
 
             /// Check if some [Vec] is in the underlying [BloomFilter].
-            pub fn contains(bloom: &$name, item: Vec<u8>) -> bool {
-                bloom.boxed.contains(&item)
+            ///
+            /// # Examples
+            ///
+            /// ```
+            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+            ///
+            #[doc = concat!("let mut bloom = ", stringify!($name), "::new();")]
+            /// let item = vec![1, 2, 3, 4, 5];
+            /// bloom.insert_vec(item.clone());
+            ///
+            /// assert!(bloom.contains(item.clone()));
+            /// ```
+            pub fn contains(&self, item: Vec<u8>) -> bool {
+                self.boxed.contains(&item)
             }
 
             /// Count how many bits are set to 1 (sometimes called a `popcount`).
-            pub fn count_ones(bloom: &$name) -> usize {
-                bloom.boxed.count_ones()
+            ///
+            /// # Examples
+            ///
+            /// ```
+            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+            ///
+            #[doc = concat!("let mut bloom = ", stringify!($name), "::new();")]
+            /// let item1 = vec![1, 2, 3, 4, 5];
+            /// bloom.insert_vec(item1.clone());
+            /// bloom.insert_vec(item1.clone());
+            /// bloom.insert_vec(item1.clone());
+            ///
+            /// let item2 = vec![6, 7];
+            /// bloom.insert_vec(item2.clone());
+            ///
+            /// let item3 = vec![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+            /// bloom.insert_vec(item2.clone());
+            ///
+            #[doc = concat!("assert!(bloom.count_ones() >= ", $k, ");")]
+            #[doc = concat!("assert!(bloom.count_ones() <= 3 * ", $k, ");")]
+            /// ```
+            pub fn count_ones(&self) -> usize {
+                self.boxed.count_ones()
             }
 
-            pub fn as_bytes(bloom: &$name) -> Vec<u8> {
-                bloom.boxed.as_bytes().to_vec()
+            /// Retreive the underlying byte array.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            #[doc = concat!("use deterministic_bloom_wasm::", stringify!($name), ";")]
+            ///
+            #[doc = concat!("let mut bloom = ", stringify!($name), "::new();")]
+            /// bloom.insert_vec(vec![1, 2, 3, 4, 5]);
+            ///
+            #[doc = concat!("assert_ne!(bloom.as_bytes(), vec![0; ", $n, "]);")]
+            #[doc = concat!("assert_eq!(bloom.as_bytes().len(), ", $n, ");")]
+            /// ```
+            pub fn as_bytes(&self) -> Vec<u8> {
+                self.boxed.as_bytes().to_vec()
             }
         }
 
         impl From<BloomFilter<$n, $k>> for $name {
-            fn from(bloom: BloomFilter<$n, $k>) -> $name {
+            fn from(bloom: BloomFilter<$n, $k>) -> Self {
                 $name {
                     boxed: Box::new(bloom)
                 }
@@ -117,6 +184,6 @@ macro_rules! gen_bloom {
     };
 }
 
-gen_bloom!(Oh, 32, 2);
-gen_bloom!(Hai, 256, 30);
-gen_bloom!(Thar, 1024, 128);
+gen_bloom!(SmallBloomFilter, 256, 13);
+gen_bloom!(MediumBloomFilter, 4096, 17);
+gen_bloom!(LargeBloomFilter, 1048576, 23);

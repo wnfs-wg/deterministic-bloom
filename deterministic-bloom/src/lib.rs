@@ -14,6 +14,7 @@ pub mod test_utils;
 
 use crate::utils::ByteArrayVisitor;
 use bitvec::prelude::BitArray;
+use miette::Diagnostic;
 use serde::{Deserialize, Serialize};
 use std::{fmt::Debug, ops::Index};
 use thiserror::Error;
@@ -67,10 +68,19 @@ pub struct HashIndexIterator<'a, T: AsRef<[u8]>, const N: usize> {
     index: u64,
 }
 
-#[derive(Error, Debug)]
+/// Errors for [BloomFilter] operations.
+#[derive(Error, Debug, Diagnostic)]
 pub enum Error {
+    /// Report a size mismatch when importing a Bloom filter from a [Vec].
     #[error("Cannot convert vector to BloomFilter: expected {expected}, but got {actual}")]
-    VectorImportSizeMismatch { expected: usize, actual: usize },
+    #[diagnostic(url(docsrs))]
+    VectorImportSizeMismatch {
+        /// The expected size in the [BloomFilter].
+        expected: usize,
+
+        /// The actual size of the [Vec].
+        actual: usize,
+    },
 }
 
 //------------------------------------------------------------------------------
@@ -240,6 +250,7 @@ impl<const N: usize, const K: usize> TryFrom<Vec<u8>> for BloomFilter<N, K> {
                 actual: vec.len(),
             }
         })?);
+
         Ok(Self { bits })
     }
 }
@@ -297,7 +308,6 @@ impl<const N: usize, const K: usize> Debug for BloomFilter<N, K> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    // use libipld::serde as ipld_serde;
 
     #[test]
     fn bloom_filter_can_insert_and_validate_item_existence() {
