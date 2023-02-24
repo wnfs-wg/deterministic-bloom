@@ -9,15 +9,10 @@
 
 pub mod utils;
 
-#[cfg(feature = "test_utils")]
-pub mod test_utils;
-
 use crate::utils::ByteArrayVisitor;
 use bitvec::prelude::BitArray;
-use miette::Diagnostic;
 use serde::{Deserialize, Serialize};
 use std::{fmt::Debug, ops::Index};
-use thiserror::Error;
 use xxhash_rust::xxh3;
 
 //------------------------------------------------------------------------------
@@ -69,7 +64,7 @@ pub struct HashIndexIterator<'a, T: AsRef<[u8]>, const N: usize> {
 }
 
 /// Errors for [BloomFilter] operations.
-#[derive(Error, Debug, Diagnostic)]
+#[derive(thiserror::Error, miette::Diagnostic, Debug)]
 pub enum Error {
     /// Report a size mismatch when importing a Bloom filter from a [Vec].
     #[error("Cannot convert vector to BloomFilter: expected {expected}, but got {actual}")]
@@ -343,9 +338,10 @@ mod tests {
 
 #[cfg(test)]
 mod proptests {
-    use test_strategy::proptest;
-
     use super::HashIndexIterator;
+    use crate::BloomFilter;
+    use proptest::collection::vec;
+    use test_strategy::proptest;
 
     #[proptest]
     fn iterator_can_give_unbounded_number_of_indices(#[strategy(0usize..500)] count: usize) {
@@ -357,6 +353,19 @@ mod proptests {
 
         for (indices, count) in indices {
             assert_eq!(indices.len(), count);
+        }
+    }
+
+    #[proptest(cases = 1000)]
+    fn test_contains(#[strategy(vec(vec(0..255u8, 0..100), 26))] values: Vec<Vec<u8>>) {
+        let mut bloom = BloomFilter::<256, 30>::new();
+
+        for v in values.iter() {
+            bloom.insert(v);
+        }
+
+        for v in values.iter() {
+            assert!(bloom.contains(v));
         }
     }
 }

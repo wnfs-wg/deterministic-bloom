@@ -10,7 +10,7 @@ readme = "README.md"
 edition = "2021"
 rust-version = "1.64"
 documentation = "https://docs.rs/deterministic-bloom-wasm"
-repository = "https://github.com/expede/deterministic-bloom/tree/main/deterministic-bloom-wasm"
+repository = "https://github.com/wnfs-wg/deterministic-bloom/tree/main/deterministic-bloom-wasm"
 authors = ["Brooklyn Zelenka <hello@brooklynzelenka.com>"]
 
 [lib]

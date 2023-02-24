@@ -30,7 +30,7 @@ pub fn set_panic_hook() {
 /// Generate a monomorphic [BloomFilter] newtypes.
 macro_rules! gen_bloom {
     ($name: ident, $n: expr, $k: expr) => {
-        #[doc = concat!("A monomorphic wrapper for [BloomFilter]`<", stringify!($n), ", ", stringify!($k), ">`.")]
+        #[doc = concat!("A monomorphic wrapper for [BloomFilter]`s with a size of ", stringify!($n), " bytes and ", stringify!($k), " hash functions.")]
         #[wasm_bindgen]
         #[derive(Debug, Default, From, Into)]
         pub struct $name {
@@ -55,7 +55,7 @@ macro_rules! gen_bloom {
             }
 
             #[doc = concat!("Attempt to initialize a [", stringify!($name), "] with a starting array.")]
-            #[doc = concat!("Fails with a [JsError] the [Vec] is not exactly ", stringify!($n), " bytes long.")]
+            #[doc = concat!("Fails with a [JsError] if the [Vec] is not exactly ", stringify!($n), " bytes long.")]
             pub fn try_from_vec(vec: Vec<u8>) -> Result<$name, JsError> {
                 $name::try_from(vec).map_err(|e| JsError::new(&e.to_string()))
             }

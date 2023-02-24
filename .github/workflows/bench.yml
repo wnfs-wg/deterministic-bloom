@@ -38,7 +38,7 @@ jobs:
           path: output.txt
 
       - name: Create gh-pages Branch
-        uses: peterjgrainger/action-create-branch@v2.3.0
+        uses: peterjgrainger/action-create-branch@v2.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -51,7 +51,7 @@ jobs:
           tool: 'cargo'
           output-file-path: output.txt
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          auto-push: ${{ github.event_name == 'push' && github.repository == 'expede/deterministic-bloom' && github.ref == 'refs/heads/main' }}
+          auto-push: ${{ github.event_name == 'push' && github.repository == 'wnfs-wg/deterministic-bloom' && github.ref == 'refs/heads/main' }}
           alert-threshold: '200%'
           comment-on-alert: true
           fail-on-alert: true
