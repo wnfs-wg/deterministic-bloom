@@ -9,9 +9,6 @@
 
 pub mod utils;
 
-#[cfg(feature = "test_utils")]
-pub mod test_utils;
-
 use crate::utils::ByteArrayVisitor;
 use bitvec::prelude::BitArray;
 use miette::Diagnostic;
