@@ -343,9 +343,10 @@ mod tests {
 
 #[cfg(test)]
 mod proptests {
-    use test_strategy::proptest;
-
     use super::HashIndexIterator;
+    use crate::BloomFilter;
+    use proptest::collection::vec;
+    use test_strategy::proptest;
 
     #[proptest]
     fn iterator_can_give_unbounded_number_of_indices(#[strategy(0usize..500)] count: usize) {
@@ -357,6 +358,19 @@ mod proptests {
 
         for (indices, count) in indices {
             assert_eq!(indices.len(), count);
+        }
+    }
+
+    #[proptest(cases = 1000)]
+    fn test_contains(#[strategy(vec(vec(0..255u8, 0..100), 26))] values: Vec<Vec<u8>>) {
+        let mut bloom = BloomFilter::<256, 30>::new();
+
+        for v in values.iter() {
+            bloom.insert(v);
+        }
+
+        for v in values.iter() {
+            assert!(bloom.contains(v));
         }
     }
 }
