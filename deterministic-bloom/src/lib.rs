@@ -11,10 +11,8 @@ pub mod utils;
 
 use crate::utils::ByteArrayVisitor;
 use bitvec::prelude::BitArray;
-use miette::Diagnostic;
 use serde::{Deserialize, Serialize};
 use std::{fmt::Debug, ops::Index};
-use thiserror::Error;
 use xxhash_rust::xxh3;
 
 //------------------------------------------------------------------------------
@@ -66,7 +64,7 @@ pub struct HashIndexIterator<'a, T: AsRef<[u8]>, const N: usize> {
 }
 
 /// Errors for [BloomFilter] operations.
-#[derive(Error, Debug, Diagnostic)]
+#[derive(thiserror::Error, miette::Diagnostic, Debug)]
 pub enum Error {
     /// Report a size mismatch when importing a Bloom filter from a [Vec].
     #[error("Cannot convert vector to BloomFilter: expected {expected}, but got {actual}")]
