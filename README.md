@@ -8,13 +8,13 @@
     <a href="https://npmjs.com/package/deterministic-bloom">
       <img src="https://img.shields.io/npm/v/deterministic-bloom" alt="Npm">
     </a>
-    <a href="https://codecov.io/gh/expede/deterministic-bloom">
-      <img src="https://codecov.io/gh/expede/deterministic-bloom/branch/main/graph/badge.svg?token=SOMETOKEN" alt="Code Coverage"/>
+    <a href="https://codecov.io/gh/wnfs-wg/deterministic-bloom">
+      <img src="https://codecov.io/gh/wnfs-wg/deterministic-bloom/branch/main/graph/badge.svg?token=SOMETOKEN" alt="Code Coverage"/>
     </a>
-    <a href="https://github.com/expede/deterministic-bloom/actions?query=">
-      <img src="https://github.com/expede/deterministic-bloom/actions/workflows/tests_and_checks.yml/badge.svg" alt="Build Status">
+    <a href="https://github.com/wnfs-wg/deterministic-bloom/actions?query=">
+      <img src="https://github.com/wnfs-wg/deterministic-bloom/actions/workflows/tests_and_checks.yml/badge.svg" alt="Build Status">
     </a>
-    <a href="https://github.com/expede/deterministic-bloom/blob/main/LICENSE">
+    <a href="https://github.com/wnfs-wg/deterministic-bloom/blob/main/LICENSE">
       <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License">
     </a>
     <a href="https://docs.rs/deterministic-bloom">
@@ -42,8 +42,8 @@
 
 ## Crates
 
-- [deterministic-bloom](https://github.com/expede/deterministic-bloom/tree/main/deterministic-bloom)
-- [deterministic-bloom-wasm](https://github.com/expede/deterministic-bloom/tree/main/deterministic-bloom-wasm)
+- [deterministic-bloom](https://github.com/wnfs-wg/deterministic-bloom/tree/main/deterministic-bloom)
+- [deterministic-bloom-wasm](https://github.com/wnfs-wg/deterministic-bloom/tree/main/deterministic-bloom-wasm)
 
 ## Usage
 
