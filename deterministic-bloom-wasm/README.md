@@ -1,6 +1,6 @@
 <div align="center">
-  <a href="https://github.com/expede/deterministic-bloom" target="_blank">
-    <img src="https://raw.githubusercontent.com/expede/deterministic-bloom/main/assets/a_logo.png" alt="deterministic-bloom Logo" width="100"></img>
+  <a href="https://github.com/wnfs-wg/deterministic-bloom" target="_blank">
+    <img src="https://raw.githubusercontent.com/wnfs-wg/deterministic-bloom/main/assets/a_logo.png" alt="deterministic-bloom Logo" width="100"></img>
   </a>
 
   <h1 align="center">deterministic-bloom-wasm</h1>
@@ -12,13 +12,13 @@
     <a href="https://npmjs.com/package/deterministic-bloom">
       <img src="https://img.shields.io/npm/v/deterministic-bloom" alt="npm">
     </a>
-    <a href="https://codecov.io/gh/expede/deterministic-bloom">
-      <img src="https://codecov.io/gh/expede/deterministic-bloom/branch/main/graph/badge.svg?token=SOMETOKEN" alt="Code Coverage"/>
+    <a href="https://codecov.io/gh/wnfs-wg/deterministic-bloom">
+      <img src="https://codecov.io/gh/wnfs-wg/deterministic-bloom/branch/main/graph/badge.svg?token=SOMETOKEN" alt="Code Coverage"/>
     </a>
-    <a href="https://github.com/expede/deterministic-bloom/actions?query=">
-      <img src="https://github.com/expede/deterministic-bloom/actions/workflows/tests_and_checks.yml/badge.svg" alt="Build Status">
+    <a href="https://github.com/wnfs-wg/deterministic-bloom/actions?query=">
+      <img src="https://github.com/wnfs-wg/deterministic-bloom/actions/workflows/tests_and_checks.yml/badge.svg" alt="Build Status">
     </a>
-    <a href="https://github.com/expede/deterministic-bloom/blob/main/LICENSE">
+    <a href="https://github.com/wnfs-wg/deterministic-bloom/blob/main/LICENSE">
       <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License">
     </a>
     <a href="https://docs.rs/deterministic-bloom-wasm">

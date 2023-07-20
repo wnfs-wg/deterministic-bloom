@@ -6,11 +6,12 @@ edition = "2021"
 authors = ["Brooklyn Zelenka <hello@brooklynzelenka.com>"]
 
 [dependencies]
-deterministic-bloom = { path = "../deterministic-bloom", version = "0.1", features = ["test_utils"] }
+deterministic-bloom = { path = "../deterministic-bloom", version = "0.1" }
+rand = "0.8"
 
 [dev-dependencies]
 criterion = { version = "0.4", default-features = false }
 
 [[bench]]
-name = "a_benchmark"
+name = "bloom_filter_benchmark"
 harness = false
