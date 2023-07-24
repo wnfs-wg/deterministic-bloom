@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use deterministic_bloom::BloomFilter;
+use deterministic_bloom::const_size::BloomFilter;
 use rand::Rng;
 
 pub fn add_benchmark(crit: &mut Criterion) {
