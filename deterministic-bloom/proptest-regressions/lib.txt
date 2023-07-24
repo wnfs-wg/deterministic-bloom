@@ -1,0 +1,8 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 291d42539f7fb8127033c08ad7c09dba8c1b74a026ba9af55d7c1cbfb3673e80 # shrinks to input = _BloomParamsFprCalcRoundTripsArgs { bloom_bytes: 1, n_elems: 1, fpr: 0.4123907350873679 }
+cc a4e3f11f5e30029214f9bca6d33a195cbeeeac10f7c128da8f2124cc5ac1920b # shrinks to input = _BloomParamsFprCalcRoundTripsArgs { n_elems: 548, fpr: 0.8964377231312348 }
