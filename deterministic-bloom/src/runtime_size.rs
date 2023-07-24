@@ -1,5 +1,5 @@
 use crate::{
-    common::{BloomParameters, HashIndexIterator},
+    common::{BloomParams, HashIndexIterator},
     utils::HexFieldDebug,
 };
 use bitvec::{prelude::Lsb0, view::BitView};
@@ -17,7 +17,7 @@ pub struct BloomFilter {
 
 impl BloomFilter {
     pub fn new_from_fpr(n_elems: u64, fpr: f64) -> Self {
-        let params = BloomParameters::new_from_fpr(n_elems, fpr);
+        let params = BloomParams::new_from_fpr(n_elems, fpr);
         let bits = Box::from(vec![0u8; params.byte_size].as_ref());
         Self {
             k_hashes: params.k_hashes,
@@ -26,7 +26,7 @@ impl BloomFilter {
     }
 
     pub fn new_from_fpr_po2(n_elems: u64, fpr: f64) -> Self {
-        let params = BloomParameters::new_from_fpr_po2(n_elems, fpr);
+        let params = BloomParams::new_from_fpr_po2(n_elems, fpr);
         let bits = Box::from(vec![0u8; params.byte_size].as_ref());
         Self {
             k_hashes: params.k_hashes,
@@ -35,7 +35,7 @@ impl BloomFilter {
     }
 
     pub fn new_from_size(bloom_bytes: usize, n_elems: u64) -> Self {
-        let params = BloomParameters::new_from_size(bloom_bytes, n_elems);
+        let params = BloomParams::new_from_size(bloom_bytes, n_elems);
         let bits = Box::from(vec![0u8; params.byte_size].as_ref());
         Self {
             k_hashes: params.k_hashes,
@@ -43,8 +43,8 @@ impl BloomFilter {
         }
     }
 
-    pub fn get_bloom_params(&self) -> BloomParameters {
-        BloomParameters {
+    pub fn get_bloom_params(&self) -> BloomParams {
+        BloomParams {
             k_hashes: self.k_hashes,
             byte_size: self.bytes.len(),
         }
