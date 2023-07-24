@@ -116,6 +116,31 @@ impl BloomFilter {
         }
     }
 
+    /// Construct the bloom filter from existing components.
+    ///
+    /// This is useful when e.g. deserializing a bloom filter.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use deterministic_bloom::runtime_size::BloomFilter;
+    ///
+    /// let mut filter = BloomFilter::new_from_fpr_po2(100_000, 0.01);
+    ///
+    /// filter.insert(b"Hello, World!");
+    ///
+    /// // Serialize
+    /// let k_hashes = filter.hash_count();
+    /// let bytes = Box::from(filter.as_bytes());
+    ///
+    /// // Deserialize
+    /// let filter2 = BloomFilter::new_with(k_hashes, bytes);
+    /// assert_eq!(filter, filter2);
+    /// ```
+    pub fn new_with(k_hashes: usize, bytes: Box<[u8]>) -> Self {
+        Self { k_hashes, bytes }
+    }
+
     /// Compute the bloom parameters for this bloom filter.
     /// This contains information about its size and hash function evaluations per
     /// item (`k_hashes`).
