@@ -23,7 +23,10 @@ pub struct HashIndexIterator<'a, T: AsRef<[u8]>> {
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub struct BloomParameters {
-    k_hashes: usize,
+    /// size of the bloom filter in bytes, non-zero
+    pub byte_size: usize,
+    /// hashing functions used/number of bits set per element, non-zero
+    pub k_hashes: usize,
 }
 
 /// Errors for [BloomFilter] operations.
@@ -73,42 +76,45 @@ impl<T: AsRef<[u8]>> Iterator for HashIndexIterator<'_, T> {
         }
     }
 }
+
 impl BloomParameters {
-    pub fn new_from_fpr(n_elems: u64, fpr: f64) -> (usize, Self) {
+    pub fn new_from_fpr(n_elems: u64, fpr: f64) -> Self {
         let byte_size = Self::optimal_byte_size(n_elems, fpr);
         let k_hashes = Self::optimal_k_hashes(byte_size * 8, n_elems);
 
-        (byte_size, Self { k_hashes })
-    }
-
-    pub fn new_from_fpr_po2(n_elems: u64, fpr: f64) -> (usize, Self) {
-        let byte_size = Self::optimal_byte_size(n_elems, fpr).next_power_of_two();
-        let k_hashes = Self::optimal_k_hashes(byte_size * 8, n_elems);
-
-        (byte_size, Self { k_hashes })
-    }
-
-    pub fn new_from_size(bloom_bytes: usize, n_elems: u64) -> Self {
         Self {
-            k_hashes: Self::optimal_k_hashes(bloom_bytes * 8, n_elems),
+            byte_size,
+            k_hashes,
         }
     }
 
-    pub fn false_positive_rate(&self, bloom_bytes: usize, n_elems: u64) -> f64 {
-        debug_assert!(bloom_bytes != 0);
+    pub fn new_from_fpr_po2(n_elems: u64, fpr: f64) -> Self {
+        let byte_size = Self::optimal_byte_size(n_elems, fpr).next_power_of_two();
+        let k_hashes = Self::optimal_k_hashes(byte_size * 8, n_elems);
+
+        Self {
+            byte_size,
+            k_hashes,
+        }
+    }
+
+    pub fn new_from_size(byte_size: usize, n_elems: u64) -> Self {
+        Self {
+            byte_size,
+            k_hashes: Self::optimal_k_hashes(byte_size * 8, n_elems),
+        }
+    }
+
+    pub fn false_positive_rate_at(&self, n_elems: u64) -> f64 {
         debug_assert!(n_elems != 0);
 
         let k = self.k_hashes as f64;
         let ki = self.k_hashes as i32;
-        let m = (bloom_bytes * 8) as f64;
+        let m = (self.byte_size * 8) as f64;
         let n = n_elems as f64;
 
         // see https://hur.st/bloomfilter/
         (1.0 - (-k / (m / n)).exp()).powi(ki)
-    }
-
-    pub fn hash_count(&self) -> usize {
-        self.k_hashes
     }
 
     fn optimal_byte_size(n_elems: u64, fpr: f64) -> usize {
@@ -146,8 +152,8 @@ mod proptests {
             return Ok(());
         }
 
-        let (size, params) = BloomParameters::new_from_fpr(n_elems, fpr);
-        let fpr_computed = params.false_positive_rate(size, n_elems);
+        let params = BloomParameters::new_from_fpr(n_elems, fpr);
+        let fpr_computed = params.false_positive_rate_at(n_elems);
 
         // The computed FPR can differ from the target FPR due to
         // rounding errors and the fact that only multiple-of-8

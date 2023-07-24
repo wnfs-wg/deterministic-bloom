@@ -11,48 +11,54 @@ use std::fmt::Debug;
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct BloomFilter {
-    parameters: BloomParameters,
+    k_hashes: usize,
     bytes: Box<[u8]>,
 }
 
 impl BloomFilter {
     pub fn new_from_fpr(n_elems: u64, fpr: f64) -> Self {
-        let (bloom_bytes, parameters) = BloomParameters::new_from_fpr(n_elems, fpr);
-        let bits = Box::from(vec![0u8; bloom_bytes].as_ref());
+        let params = BloomParameters::new_from_fpr(n_elems, fpr);
+        let bits = Box::from(vec![0u8; params.byte_size].as_ref());
         Self {
-            parameters,
+            k_hashes: params.k_hashes,
             bytes: bits,
         }
     }
 
     pub fn new_from_fpr_po2(n_elems: u64, fpr: f64) -> Self {
-        let (bloom_bytes, parameters) = BloomParameters::new_from_fpr_po2(n_elems, fpr);
-        let bits = Box::from(vec![0u8; bloom_bytes].as_ref());
+        let params = BloomParameters::new_from_fpr_po2(n_elems, fpr);
+        let bits = Box::from(vec![0u8; params.byte_size].as_ref());
         Self {
-            parameters,
+            k_hashes: params.k_hashes,
             bytes: bits,
         }
     }
 
     pub fn new_from_size(bloom_bytes: usize, n_elems: u64) -> Self {
-        let parameters = BloomParameters::new_from_size(bloom_bytes, n_elems);
-        let bits = Box::from(vec![0u8; bloom_bytes].as_ref());
+        let params = BloomParameters::new_from_size(bloom_bytes, n_elems);
+        let bits = Box::from(vec![0u8; params.byte_size].as_ref());
         Self {
-            parameters,
+            k_hashes: params.k_hashes,
             bytes: bits,
         }
     }
 
+    pub fn get_bloom_params(&self) -> BloomParameters {
+        BloomParameters {
+            k_hashes: self.k_hashes,
+            byte_size: self.bytes.len(),
+        }
+    }
+
     pub fn false_positive_rate_at(&self, n_elems: u64) -> f64 {
-        self.parameters
-            .false_positive_rate(self.bytes.len(), n_elems)
+        self.get_bloom_params().false_positive_rate_at(n_elems)
     }
 
     pub fn current_false_positive_rate(&self) -> f64 {
         let m = (self.bytes.len() * 8) as f64;
         let m_set = self.count_ones() as f64;
         let load = m_set / m;
-        load.powi(self.parameters.hash_count() as i32)
+        load.powi(self.hash_count() as i32)
     }
 
     pub fn count_ones(&self) -> usize {
@@ -75,7 +81,7 @@ impl BloomFilter {
     }
 
     pub fn hash_count(&self) -> usize {
-        self.parameters.hash_count()
+        self.k_hashes
     }
 
     pub fn as_bytes(&self) -> &[u8] {
@@ -90,7 +96,7 @@ impl BloomFilter {
 impl Debug for BloomFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("DynBloomFilter")
-            .field("parameters", &self.parameters)
+            .field("k_hashes", &self.k_hashes)
             .field("bits", &HexFieldDebug(&self.bytes))
             .finish()
     }
