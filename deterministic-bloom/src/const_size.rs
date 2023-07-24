@@ -274,7 +274,7 @@ mod tests {
 mod proptests {
     use super::BloomFilter;
     use crate::common::HashIndexIterator;
-    use proptest::{collection::vec, prop_assert};
+    use proptest::collection::vec;
     use test_strategy::proptest;
 
     #[proptest]

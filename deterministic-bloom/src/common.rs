@@ -92,7 +92,7 @@ impl BloomParams {
     /// that the bloom filter will hold as well as the approximate
     /// false positive rate it should have at that capacity.
     ///
-    /// `n_elems` must be non-zero, and `fpr` must be between 0.0 and 1.0, exclusive.
+    /// `n_elems` must be non-zero, and `fpr` must be between 0 and 1, exclusive.
     ///
     /// This will generate non-power-of-two sizes for bloom filters.
     /// For a variant that power-of-two (po2) sizes, see [`BloomParams::new_from_fpr_po2`].
