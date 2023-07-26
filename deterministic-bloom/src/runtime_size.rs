@@ -266,3 +266,68 @@ impl Debug for BloomFilter {
             .finish()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::BloomFilter;
+
+    #[test]
+    fn serialization_round_trip() {
+        let mut filter = BloomFilter::new_from_fpr(100, 0.001);
+        filter.insert(b"Hello");
+        filter.insert(b"World!");
+        let serialized_bytes = filter.as_bytes();
+        let serialized_k = filter.hash_count();
+        let deserialized = BloomFilter::new_with(serialized_k, Box::from(serialized_bytes));
+        assert!(deserialized.contains(b"Hello"));
+        assert!(!deserialized.contains(b"abc"));
+        assert_eq!(deserialized, filter);
+    }
+}
+
+#[cfg(test)]
+mod proptests {
+    use super::BloomFilter;
+    use proptest::prop_assert;
+    use test_strategy::proptest;
+
+    #[proptest]
+    fn inserted_always_contained(items: Vec<u64>, #[strategy(100usize..10_000)] size: usize) {
+        let capacity = std::cmp::max(items.len() as u64, 1);
+        let mut filter = BloomFilter::new_from_size(size, capacity);
+
+        for item in items.iter() {
+            filter.insert(&item.to_le_bytes());
+        }
+
+        for item in items.iter() {
+            prop_assert!(filter.contains(&item.to_le_bytes()));
+        }
+    }
+
+    #[proptest]
+    fn false_positive_rate_as_predicted(
+        #[strategy(100u64..1_000)] n_elems: u64,
+        #[strategy(100.0..10_000.0)] inv_fpr: f64,
+    ) {
+        let fpr = 1.0 / inv_fpr;
+        let mut filter = BloomFilter::new_from_fpr(n_elems, fpr);
+
+        for i in 0..n_elems {
+            filter.insert(&i.to_le_bytes());
+        }
+
+        let measurements = 100_000;
+        let mut false_positives = 0;
+
+        for i in n_elems..n_elems + measurements {
+            if filter.contains(&i.to_le_bytes()) {
+                false_positives += 1;
+            }
+        }
+
+        let computed_fpr = false_positives as f64 / measurements as f64;
+        // The actual FPR should be pretty close
+        prop_assert!((computed_fpr - fpr).abs() < 1e-3);
+    }
+}
