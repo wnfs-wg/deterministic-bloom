@@ -260,7 +260,7 @@ impl BloomFilter {
 
 impl Debug for BloomFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("BloomFilterg")
+        f.debug_struct("BloomFilter")
             .field("k_hashes", &self.k_hashes)
             .field("bytes", &HexFieldDebug(&self.bytes))
             .finish()
