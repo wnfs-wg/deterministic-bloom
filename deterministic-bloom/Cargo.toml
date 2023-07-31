@@ -27,7 +27,7 @@ tracing = "0.1"
 xxhash-rust = { version = "0.8", features = ["xxh3"] }
 
 [dev-dependencies]
-libipld = { version = "0.15", features = ["serde-codec"] }
+libipld = { version = "0.16", features = ["serde-codec"] }
 proptest = "1.0"
 rand = "0.8"
 test-strategy = "0.2"
