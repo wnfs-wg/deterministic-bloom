@@ -5,7 +5,7 @@
 //! Wasm/JS bindings for [BloomFilter]
 
 use derive_more::{From, Into};
-use deterministic_bloom::BloomFilter;
+use deterministic_bloom::const_size::BloomFilter;
 use std::boxed::Box;
 use wasm_bindgen::prelude::{wasm_bindgen, JsError};
 
@@ -175,9 +175,9 @@ macro_rules! gen_bloom {
         }
 
         impl TryFrom<Vec<u8>> for $name {
-            type Error = deterministic_bloom::Error;
+            type Error = deterministic_bloom::common::Error;
 
-            fn try_from(vec: Vec<u8>) -> Result<Self, deterministic_bloom::Error> {
+            fn try_from(vec: Vec<u8>) -> Result<Self, deterministic_bloom::common::Error> {
                 <BloomFilter<$n, $k>>::try_from(vec).map($name::from)
             }
         }
