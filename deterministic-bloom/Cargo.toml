@@ -30,7 +30,7 @@ xxhash-rust = { version = "0.8", features = ["xxh3"] }
 libipld = { version = "0.16", features = ["serde-codec"] }
 proptest = "1.0"
 rand = "0.8"
-test-strategy = "0.2"
+test-strategy = "0.3"
 
 [features]
 default = []
