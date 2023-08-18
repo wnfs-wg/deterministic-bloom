@@ -234,10 +234,6 @@ impl BloomFilter {
     /// assert!(filter.contains(&106u32.to_le_bytes()));
     /// ```
     pub fn contains(&self, item: &impl AsRef<[u8]>) -> bool {
-        if self.bytes.len() == 0 {
-            return false;
-        }
-
         for i in self.hash_indices(item) {
             if !self.bytes.view_bits::<Lsb0>()[i] {
                 return false;
@@ -291,7 +287,8 @@ mod tests {
     #[test]
     fn empty_bloom_filter() {
         let filter = BloomFilter::new_with(3, Box::new([]));
-        assert!(!filter.contains(&[1, 2, 3]));
+        // Technically an empty bloom "contains" anything, since everything is a false positive.
+        assert!(filter.contains(&[1, 2, 3]));
     }
 }
 
