@@ -73,6 +73,11 @@ impl<T: AsRef<[u8]>> Iterator for HashIndexIterator<'_, T> {
     type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
+        if self.bit_size == 0 {
+            // This avoids an infinite loop in rejection sampling.
+            return None;
+        }
+
         let bit_size_po2 = self.bit_size.next_power_of_two();
         loop {
             let hash = xxh3::xxh3_64_with_seed(self.item.as_ref(), self.index) as usize;
