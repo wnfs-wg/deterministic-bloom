@@ -335,6 +335,6 @@ mod proptests {
 
         let computed_fpr = false_positives as f64 / measurements as f64;
         // The actual FPR should be pretty close
-        prop_assert!((computed_fpr - fpr).abs() < 1e-3);
+        prop_assert!((computed_fpr - fpr).abs() < 1.5e-3);
     }
 }

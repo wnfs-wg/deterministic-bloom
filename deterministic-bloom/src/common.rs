@@ -196,6 +196,17 @@ impl BloomParams {
 }
 
 #[cfg(test)]
+mod tests {
+    use super::HashIndexIterator;
+
+    #[test]
+    fn test_zero_bit_size() {
+        let mut iterator = HashIndexIterator::new(&[1, 2, 3], 0);
+        assert_eq!(iterator.next(), None);
+    }
+}
+
+#[cfg(test)]
 mod proptests {
     use super::BloomParams;
     use proptest::prop_assert;
