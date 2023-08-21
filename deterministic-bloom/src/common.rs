@@ -73,6 +73,11 @@ impl<T: AsRef<[u8]>> Iterator for HashIndexIterator<'_, T> {
     type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
+        if self.bit_size == 0 {
+            // This avoids an infinite loop in rejection sampling.
+            return None;
+        }
+
         let bit_size_po2 = self.bit_size.next_power_of_two();
         loop {
             let hash = xxh3::xxh3_64_with_seed(self.item.as_ref(), self.index) as usize;
@@ -187,6 +192,17 @@ impl BloomParams {
         let n = n_elems as f64;
         let k_hashes = ((m / n) * LN_2).ceil() as usize;
         std::cmp::max(k_hashes, 1)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::HashIndexIterator;
+
+    #[test]
+    fn test_zero_bit_size() {
+        let mut iterator = HashIndexIterator::new(&[1, 2, 3], 0);
+        assert_eq!(iterator.next(), None);
     }
 }
 
