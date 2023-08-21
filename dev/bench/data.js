@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1690819186988,
+  "lastUpdate": 1692641409546,
   "repoUrl": "https://github.com/wnfs-wg/deterministic-bloom",
   "entries": {
     "Rust Benchmark": [
@@ -107,6 +107,42 @@ window.BENCHMARK_DATA = {
             "name": "count_ones",
             "value": 662,
             "range": "± 37",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "philipp.krueger1@gmail.com",
+            "name": "Philipp Krüger",
+            "username": "matheus23"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e668ca4a538402d6bc55c1bab780c3476d7672ba",
+          "message": "Correctly handle empty bloom filters, avoid infinite loop (#9)\n\n`HashIndexIterator` used to loop infinitely when `bit_size` was 0,\r\nbecause it wouldn't be able to generate a random index that's `< 0`\r\n(fair enough).\r\n\r\nNow it simply exists instantly if `bit_size == 0`.\r\n\r\nAlso added a test case for empty blooms. They \"technically\" contain\r\neverything as a false positive. I opted for that, rather than \"an empty\r\nbloom contains nothing\", since that keeps the invariant that if you\r\n`.insert` something into a bloom filter, it will *always* be\r\n`contain`ed.",
+          "timestamp": "2023-08-21T20:08:25+02:00",
+          "tree_id": "7bcec74d1143f1aa24a7f6ba840655fcca758e1f",
+          "url": "https://github.com/wnfs-wg/deterministic-bloom/commit/e668ca4a538402d6bc55c1bab780c3476d7672ba"
+        },
+        "date": 1692641408721,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "add",
+            "value": 1470,
+            "range": "± 72",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "count_ones",
+            "value": 740,
+            "range": "± 32",
             "unit": "ns/iter"
           }
         ]
