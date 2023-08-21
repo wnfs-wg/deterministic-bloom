@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1692641409546,
+  "lastUpdate": 1692641583464,
   "repoUrl": "https://github.com/wnfs-wg/deterministic-bloom",
   "entries": {
     "Rust Benchmark": [
@@ -143,6 +143,42 @@ window.BENCHMARK_DATA = {
             "name": "count_ones",
             "value": 740,
             "range": "± 32",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "philipp.krueger1@gmail.com",
+            "name": "Philipp Krüger",
+            "username": "matheus23"
+          },
+          "committer": {
+            "email": "philipp.krueger1@gmail.com",
+            "name": "Philipp Krüger",
+            "username": "matheus23"
+          },
+          "distinct": true,
+          "id": "62849fa6b3d1731ea4f4cb18b8d81e845404dc10",
+          "message": "Add description",
+          "timestamp": "2023-08-21T20:12:09+02:00",
+          "tree_id": "04d19e0e42f6aa8654e7641e0821b852292e0ad1",
+          "url": "https://github.com/wnfs-wg/deterministic-bloom/commit/62849fa6b3d1731ea4f4cb18b8d81e845404dc10"
+        },
+        "date": 1692641582968,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "add",
+            "value": 924,
+            "range": "± 8",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "count_ones",
+            "value": 642,
+            "range": "± 1",
             "unit": "ns/iter"
           }
         ]
